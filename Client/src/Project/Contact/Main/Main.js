@@ -5,22 +5,28 @@ import Modal from 'react-bootstrap/Modal';
 import ImportForm from './ImportForm';
 import { parse } from "papaparse"
 import Pagination from './Pagenation';
-import Tippy from '@tippyjs/react'
-import "tippy.js/dist/tippy.css"
-
-const Main = ({ data, setget, get }) => {
+import {CSVLink} from "react-csv";
+import Button from 'react-bootstrap/Button';
+const Main = ({ data, setget, get ,setdata}) => {
   const [tickes, settickes] = useState([])
   const [show, setshow] = useState(false)
   const [value, setvalue] = useState("")
   const [show1, setshow1] = useState(false)
   const [show2, setshow2] = useState(false)
   const [show3, setshow3] = useState(false)
+  const [show4, setshow4] = useState(false)
   const showPerPage = 10;
+  const [edititem,setedititem] = useState({name:"",designation:"",company:"",industry:"",email:"",phoneNumber:"",country:""})
   const [pagination, setPagination] = useState({
     start: 0,
     end: showPerPage,
   });
   const authToken = localStorage.getItem("authorization");
+  
+  const data1 = [
+    ["name","designation","company","industry","email","phoneNumber","country"]
+  ]
+
   const handleShow = () => setshow(true);
   const handleClose = () => setshow(false);
   const handleShow1 = () => setshow1(true);
@@ -29,6 +35,8 @@ const Main = ({ data, setget, get }) => {
   const handleClose2 = () => setshow2(false);
   const handleShow3 = () => setshow3(true);
   const handleClose3 = () => setshow3(false);
+  const handleShow4 = () => setshow4(true);
+  const handleClose4 = () => setshow4(false);
   const deletecollector = (e) => {
     const { value, checked } = e.target;
     if (checked) {
@@ -39,7 +47,7 @@ const Main = ({ data, setget, get }) => {
   }
   const deletehandler = (e) => {
     axios({
-      url: "https://project-server-g5-10x.herokuapp.com/contact/delete",
+      url: "https://project-server-g5-10x-1.herokuapp.com/contact/delete",
       method: "DELETE",
       headers: {
         authorization: authToken
@@ -72,7 +80,7 @@ const Main = ({ data, setget, get }) => {
         data.pop()
       }
       axios({
-        url: "https://project-server-g5-10x.herokuapp.com/contact",
+        url: "https://project-server-g5-10x-1.herokuapp.com/contact",
         method: "POST",
         headers: {
           authorization: authToken
@@ -100,7 +108,7 @@ const Main = ({ data, setget, get }) => {
       }
       setvalue("")
       axios({
-        url: "https://project-server-g5-10x.herokuapp.com/contact",
+        url: "https://project-server-g5-10x-1.herokuapp.com/contact",
         method: "POST",
         headers: {
           authorization: authToken
@@ -138,12 +146,34 @@ const Main = ({ data, setget, get }) => {
     settickes([id])
     handleShow2()
   }
+  const editcollector = (id) => {
+    setedititem(id)
+    handleShow4()
+  }
+  const edithandler = ()=>{
+    axios({
+      url: "https://project-server-g5-10x-1.herokuapp.com/contact/edit",
+      method: "PUT",
+      headers: {
+        authorization: authToken
+      },
+      data: edititem
+    }).then((res) => {
+       handleClose4()
+       setget(!get)
+    })
+  }
+
   const onPaginationChange = (start, end) => {
     setPagination({ start: start, end: end });
   };
+
   return (
     <>
       <div className="contacts">
+        <div>
+          <marquee slide style={{"marginBottom":"10px","color":"red"}}>Note : Export Csv File and Import Data Though Csv File, Don't Change Headers In Csv  While entering Data in Csv</marquee>
+        </div>
         <div className="row1">
           <div className='row1-left'>
             <span> <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -174,10 +204,14 @@ const Main = ({ data, setget, get }) => {
               <path d="M4.73979 0L0.652832 3.89268H3.71805V10.7317H5.76153V3.89268H8.82675L4.73979 0ZM11.892 13.6683V6.82927H9.84848V13.6683H6.78327L10.8702 17.561L14.9572 13.6683H11.892Z" fill="black" />
             </svg>
               Import</span>
-            <span><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <span >
+            <CSVLink data={data1} filename="Report.csv">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M14 11V14H2V11H0V14C0 15.1 0.9 16 2 16H14C15.1 16 16 15.1 16 14V11H14ZM3 5L4.41 6.41L7 3.83V12H9V3.83L11.59 6.41L13 5L8 0L3 5Z" fill="black" />
             </svg>
-              Export</span>
+              Export
+              </CSVLink>
+            </span>
           </div>
         </div>
         <div className='Tablesection'>
@@ -187,7 +221,7 @@ const Main = ({ data, setget, get }) => {
                 <th className='child'>
                   <input type="checkbox" id='name' onChange={(e) => deleteAll(e, "tbody")} />
                   Name</th>
-                <th className='child'><svg className='Line' width="2" height="25" viewBox="0 0 2 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <th className='child'><svg className='Line' width="2" height="25" viewBox="0 0 2 25" fill="none" xmlns="http://www.w3.org/2000/svg" >
                   <path d="M1 0V25" stroke="#7D7D7D" stroke-width="2" />
                 </svg>
                   Designation <svg className='downarrow' width="11" height="15" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -250,12 +284,10 @@ const Main = ({ data, setget, get }) => {
                       <td >{item.designation}</td>
                       <td >{item.company}</td>
                       <td >{item.industry}</td>
-                      <Tippy placement="bottom-start" arrow={true} content={<p style={{ position: "relative" }} className={"displaytootip"}>{item.email.slice(0,20)}</p>}>
                         <td style={{ cursor: "pointer" }}>{item.email} </td>
-                      </Tippy>
                       <td >{item.phoneNumber}</td>
                       <td >{item.country}</td>
-                      <td className='deletesvg'><svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <td className='deletesvg'><svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={(e) => editcollector(item)}>
                         <path d="M1.24989 17.1249C1.16169 17.1255 1.07438 17.1073 0.993696 17.0717C0.91301 17.0361 0.840777 16.9838 0.781743 16.9183C0.72271 16.8528 0.678213 16.7755 0.651179 16.6915C0.624144 16.6076 0.615185 16.5189 0.624888 16.4312L1.10614 12.0562C1.12327 11.9164 1.18714 11.7864 1.28739 11.6874L11.5124 1.46244C11.6982 1.2763 11.9188 1.12863 12.1617 1.02787C12.4046 0.927108 12.665 0.875244 12.928 0.875244C13.191 0.875244 13.4514 0.927108 13.6943 1.02787C13.9372 1.12863 14.1579 1.2763 14.3436 1.46244L16.2874 3.40619C16.4735 3.59196 16.6212 3.81262 16.722 4.05553C16.8227 4.29844 16.8746 4.55884 16.8746 4.82182C16.8746 5.0848 16.8227 5.3452 16.722 5.58811C16.6212 5.83102 16.4735 6.05167 16.2874 6.23744L6.06864 16.4562C5.96966 16.5564 5.83972 16.6203 5.69989 16.6374L1.32489 17.1187L1.24989 17.1249ZM2.33114 12.4062L1.95614 15.7937L5.34364 15.4187L15.4061 5.35619C15.4761 5.28652 15.5315 5.20372 15.5694 5.11256C15.6072 5.02139 15.6267 4.92365 15.6267 4.82494C15.6267 4.72623 15.6072 4.62849 15.5694 4.53733C15.5315 4.44617 15.4761 4.36337 15.4061 4.29369L13.4561 2.34369C13.3865 2.27377 13.3037 2.2183 13.2125 2.18044C13.1213 2.14259 13.0236 2.1231 12.9249 2.1231C12.8262 2.1231 12.7284 2.14259 12.6373 2.18044C12.5461 2.2183 12.4633 2.27377 12.3936 2.34369L2.33114 12.4062Z" fill="#0884FF" />
                         <path d="M14.3748 7.88117C14.2925 7.88165 14.211 7.86588 14.1348 7.83478C14.0587 7.80367 13.9894 7.75785 13.931 7.69992L10.0498 3.80617C9.9915 3.7479 9.94527 3.67872 9.91374 3.60258C9.8822 3.52644 9.86597 3.44483 9.86597 3.36242C9.86597 3.28001 9.8822 3.1984 9.91374 3.12226C9.94527 3.04613 9.9915 2.97694 10.0498 2.91867C10.108 2.8604 10.1772 2.81417 10.2534 2.78263C10.3295 2.7511 10.4111 2.73486 10.4935 2.73486C10.5759 2.73486 10.6575 2.7511 10.7337 2.78263C10.8098 2.81417 10.879 2.8604 10.9373 2.91867L14.831 6.81242C14.8896 6.87052 14.9361 6.93965 14.9678 7.01581C14.9996 7.09197 15.0159 7.17366 15.0159 7.25617C15.0159 7.33868 14.9996 7.42037 14.9678 7.49653C14.9361 7.57269 14.8896 7.64182 14.831 7.69992C14.7711 7.75936 14.6999 7.80607 14.6214 7.83722C14.543 7.86837 14.4591 7.88332 14.3748 7.88117Z" fill="#0884FF" />
                         <path d="M10.053 6.81464L5.18726 11.6804L6.07114 12.5643L10.9369 7.69852L10.053 6.81464Z" fill="#0884FF" />
@@ -323,6 +355,61 @@ const Main = ({ data, setget, get }) => {
             </div>
           </Modal.Body>
         </Modal>
+        <Modal show={show4} size="lg" onHide={handleClose4}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Contant</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className='editsection'>
+          <div className='edit'>
+            <div>
+            <label>Name</label><br/>
+            <input value={edititem.name} onChange={(e)=>setedititem({...edititem,name:e.target.value})}/>
+            </div>
+            <div>
+            <label>Designation</label><br/>
+            <input value={edititem.designation} onChange={(e)=>setedititem({...edititem,designation:e.target.value})}/>
+            </div>
+          </div>
+          <div className='edit'>
+            <div>
+            <label>Company</label><br/>
+            <input value={edititem.company} onChange={(e)=>setedititem({...edititem,company:e.target.value})}/>
+            </div>
+            <div>
+            <label>Industry</label><br/>
+            <input value={edititem.industry} onChange={(e)=>setedititem({...edititem,industry:e.target.value})}/>
+            </div>
+          </div>
+          <div className='edit'>
+            <div>
+            <label>Email</label><br/>
+            <input value={edititem.email} onChange={(e)=>setedititem({...edititem,email:e.target.value})}/>
+            </div>
+            <div>
+            <label>Phone Number</label><br/>
+            <input value={edititem.phoneNumber} onChange={(e)=>setedititem({...edititem,phoneNumber:e.target.value})}/>
+            </div> 
+          </div>
+          <div className='edit'>
+            <div>
+            <label>Country</label><br/>
+            <input value={edititem.country} onChange={(e)=>setedititem({...edititem,country:e.target.value})}/>
+            </div>
+          </div>
+          </div>
+          
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose4}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={()=>edithandler()}>
+            Edit
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
         {data.length ? (
           <div className='pagenation'>
             <Pagination showPerPage={showPerPage} total={data.length} onPaginationChange={onPaginationChange} />

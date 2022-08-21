@@ -1,7 +1,7 @@
 .contacts{
-    margin: 25px auto;
+    margin: 10px auto;
     background-color: #FBFBFB;
-    height: 80%;
+    height: 70%;
     width: 96%;
     padding-top: 10px;
 }
@@ -28,7 +28,7 @@ thead{
     background-color: #B2DFFF;
 }
 thead tr th{
-    padding: 12px 5px;
+    padding: 8px 5px;
 }
   tbody tr td {
     padding: 8px 5px;
@@ -78,7 +78,7 @@ table input{
     margin: 5px;
 }
 .pagenation{
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 5px;
     display: flex;
     justify-content: flex-end;
@@ -125,4 +125,20 @@ table input{
  td,th{
     text-align: left;
     margin-left: 5px;
+ }
+ .edit{
+    margin-top: 10px;
+    display: flex;
+    column-gap: 20px;
+ }
+ .editsection{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: 5px;
+ }
+ .edit input{
+    width: 350px;
+    padding: 3px;
  }

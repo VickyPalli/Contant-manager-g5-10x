@@ -113,5 +113,32 @@ App.delete("/delete", (req, res) => {
         res.status(400).json("Network Issue")
     }
 })
+App.put("/edit", (req, res) => {
+    try {
+        const { userName } = jwt.verify(req.headers.authorization, process.env.SECRET_KEY)
+        UserModel.find({ userName: userName }).then((user) => {
+            if (user.length) {
+                 ContactModel.updateOne({ userId: userName },{$set :{
+                    "contact.$[eleX].name" : `${req.body.name}`,
+                    "contact.$[eleX].designation" : `${req.body.designation}`,
+                    "contact.$[eleX].company" : `${req.body.company}`,
+                    "contact.$[eleX].industry" : `${req.body.industry}`,
+                    "contact.$[eleX].email" : `${req.body.email}`,
+                    "contact.$[eleX].phoneNumber" : `${req.body.phoneNumber}`,
+                    "contact.$[eleX].country" : `${req.body. country}`
+                 }
+                },{arrayFilters : [{"eleX._id" : `${req.body._id}`}]}).then((data)=>{
+                    res.status(200).json("Dataupdated")
+                 })
+            } else {
+                res.status(400).json("UnAuthorized User")
+            }
+        }).catch((err) => {
+            res.status(400).json("Network Issue")
+        })
+    } catch (err) {
+        res.status(400).json("Network Issue")
+    }
+})
 
 module.exports = App 

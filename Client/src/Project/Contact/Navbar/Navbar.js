@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import "./style.css"
 import SearchIcon from '@mui/icons-material/Search';
 import pro from "./Images/pro.png"
-const Navbar = ({ data, setdata , profile ,setget , get}) => {
+const Navbar = ({ data, setdata ,setget , get}) => {
     const [searchword, setsearchword] = useState("")
     const [filterdata, setfilterdata] = useState([])
+    const user = localStorage.getItem("user")
     const searchhandler = (e) => {
         setsearchword(e.target.value)
         const queryword = e.target.value
@@ -68,7 +69,7 @@ const Navbar = ({ data, setdata , profile ,setget , get}) => {
                 <div>
                     <ul>
                         <li className='profilename'>
-                          {profile}
+                          {user}
                         </li>
                         <li className='position'>
                           Super Admin

@@ -3,7 +3,7 @@ import { FiLogOut } from "react-icons/fi"
 import { MdContacts } from "react-icons/md"
 import "./style.css"
 import { useNavigate } from 'react-router-dom'
-const Sidebar = () => {
+const Sidebar = ({setget , get}) => {
   const Navigate = useNavigate()
   const Logouthandler = ()=>{
     localStorage.setItem("authorization", "");
@@ -20,7 +20,7 @@ const Sidebar = () => {
           </svg>
             Dashboard</label>
           <br /><br />
-          <button> <MdContacts size={"16px"} /> Total Contacts <b style={{ fontSize: "16px" }}>|</b></button>
+          <button onClick={()=>setget(!get)}> <MdContacts size={"16px"} /> Total Contacts <b style={{ fontSize: "16px" }}>|</b></button>
         </div>
         <div className="sidebar-bottom">
           <span style={{"cursor":"pointer"}}> <FiLogOut size={"16px"}  onClick={(e)=>Logouthandler(e)} /> Log out</span>

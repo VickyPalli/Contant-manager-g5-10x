@@ -22,7 +22,7 @@ const Login = () => {
         if(authToken){
             Navigate("/userContact")
         }
-    })
+    },[])
 
     const [type, setType] = useState('password');
     const [icon, setIcon] = useState(eyeOff);
@@ -44,13 +44,14 @@ const Login = () => {
             alert("username or password is missing");
         } else {
             axios({
-                url: "https://project-server-g5-10x.herokuapp.com/user/login",
+                url: "https://project-server-g5-10x-1.herokuapp.com/user/login",
                 method: "POST",
                 headers: {
                 },
                 data: login
             }).then((loginData) => {
                 localStorage.setItem("authorization", loginData.data.AuthToken);
+                localStorage.setItem("user",login.userName)
                Navigate("/userContact");
             }).catch((err) => {
                 setshow(!show)
@@ -92,7 +93,7 @@ const Login = () => {
                         </div> <br />
                         
                         <button type='submit' className='signup-btn field' >Log In</button><br />
-                        <Link to="/signup"><span className='link-btn'>Sign Up</span></Link>
+                        <Link to="/signup" style={{"textDecoration":"none"}}><span className='link-btn'>New User ?</span>Sign Up</Link>
                     </form>
                 </div>
                 <div className='right-dots' >

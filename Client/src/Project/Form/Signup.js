@@ -4,7 +4,7 @@ import Left from '../assets/left.png';
 import Right from '../assets/right.png';
 import Dots from '../assets/dots.png';
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const Signup = () => {
@@ -16,7 +16,7 @@ const Signup = () => {
         if(data.password === data.confirmpassword){
             console.log(data);
              axios({
-                url: "https://project-server-g5-10x.herokuapp.com/user/signup",
+                url: "https://project-server-g5-10x-1.herokuapp.com/user/signup",
                 method: "POST",
                 headers: {
     
@@ -69,7 +69,8 @@ const Signup = () => {
                         <div className='signuperror'><input required style={{marginBottom:"20px",border:"1px solid grey"}} onChange={(e) => inputHandler(e, "confirmpassword")} className="box1 field" type="password" value={data.confirmpassword} placeholder="Confirm Password" ></input>
                         {show ? <span className='error1'>Username Exit</span> : ""}  
                         </div>
-                        <button className='register-btn field' type="submit" >Sign Up</button>
+                        <button className='register-btn field' type="submit" >Sign Up</button><br/>
+                        <span style={{"marginLeft":"10px"}}>Already User ? <Link to="/" style={{"textDecoration":"none"}}>Login</Link></span>
 
                     </form>
                 </div>
